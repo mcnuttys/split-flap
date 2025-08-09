@@ -1,0 +1,94 @@
+body {
+    background-color: rgb(80, 80, 80);
+
+    display: flex;
+    flex-direction: column;
+    row-gap: 1em;
+    justify-content: center;
+}
+
+textarea {
+    height: 10vh;
+
+    background-color: rgb(25, 25, 25);
+    color: white;
+
+    padding: 1em;
+    border-radius: 1em;
+    resize: none;
+
+    border-width: 0;
+}
+
+#flap_holder {
+    background-color: rgb(0, 0, 0);
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    padding: 1em;
+    border-radius: 1em;
+}
+
+.split_flap {
+    position: relative;
+
+    width: 16px;
+    height: 32px;
+    padding: 15px;
+    font-size: 2.2em;
+
+    color: white;
+    user-select: none;
+}
+
+.split_flap .flap_top {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+
+    background-color: rgb(25, 25, 25);
+    width: 90%;
+    height: 44%;
+
+    border-top-left-radius: 25%;
+    border-top-right-radius: 25%;
+
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+
+    transform-origin: 50% 100%;
+}
+
+.flap_top .container {
+    margin: 0;
+    transform: translateY(50%);
+}
+
+.split_flap .flap_bottom {
+    position: absolute;
+    bottom: 5%;
+    left: 5%;
+
+    background-color: rgb(25, 25, 25);
+    width: 90%;
+    height: 44%;
+
+    border-bottom-left-radius: 25%;
+    border-bottom-right-radius: 25%;
+
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+
+    transform-origin: 50% 0%;
+}
+
+.flap_bottom .container {
+    margin: 0;
+    transform: translateY(-50%);
+}
