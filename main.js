@@ -21,7 +21,7 @@ class SplitFap {
         this.anim_top_flap.container.innerHTML = this.content_array[this.current_index]
         this.anim_bottom_flap.container.innerHTML = this.content_array[this.current_index]
 
-        this.anim_top = this.anim_top_flap.flap.animate([{ transform: "scaleY(1)" }, { transform: "scaleY(0)" }], { duration: this.anim_durration, fill: "forwards" })
+        this.anim_top = this.anim_top_flap.flap.animate([{ transform: "scaleY(1)" }, { transform: "scaleY(0)" }], { duration: this.anim_durration, easing: "ease-in", fill: "forwards" })
         this.anim_bottom = this.anim_bottom_flap.flap.animate([{ transform: "scaleY(0)" }, { transform: "scaleY(1)" }], { duration: this.anim_durration, fill: "forwards", delay: this.anim_durration })
 
         this.anim_top_finished = true
@@ -120,7 +120,7 @@ const new_flap = (parent, className) => {
 }
 
 // str = " AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789!."
-str = " etaoinshrdlcumwfgypbvkjxqzETAOINSHRDLCUMWFGYPBVKJXQZ012345679!."
+str = " etaoinshrdlcumwfgypbvkjxqzETAOINSHRDLCUMWFGYPBVKJXQZ0123456789!./:@"
 arr = str.split('')
 flaps = []
 for (let i = 0; i < 234; i++) {
@@ -161,7 +161,7 @@ const update_text = async () => {
 
             if (is_set)
                 await sleep(50)
-            
+
         } else {
             flaps[i].set_target_index(0)
         }
