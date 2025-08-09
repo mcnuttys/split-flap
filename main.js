@@ -174,6 +174,7 @@ const update_text = async () => {
 
         } else {
             flaps[i].set_target_index(0)
+            await sleep(10)
         }
     }
 }
