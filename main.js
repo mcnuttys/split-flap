@@ -50,8 +50,19 @@ class SplitFap {
         if (this.current_index === this.target_index)
             return
 
-        if (!(this.anim_top_finished && this.anim_bottom_finished))
+        if (!(this.anim_top_finished && this.anim_bottom_finished)) {
+            if (this.anim_top.currentTime > this.duration * 2) {
+                this.anim_top.cancel()
+                this.anim_top_finished = true
+            }
+            
+            if (this.anim_bottom.currentTime > this.duration * 2) {
+                this.anim_bottom.cancel()
+                this.anim_bottom_finished = true
+            }
+
             return
+        }
 
         let next_index = this.current_index + 1
 
