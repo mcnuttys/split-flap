@@ -16,10 +16,10 @@ class SplitFap {
         this.anim_top_flap = new_flap(this.element, "flap_top")
         this.anim_bottom_flap = new_flap(this.element, "flap_bottom")
 
-        this.top_flap.container.innerHTML = this.content_array[this.current_index]
-        this.bottom_flap.container.innerHTML = this.content_array[this.current_index]
-        this.anim_top_flap.container.innerHTML = this.content_array[this.current_index]
-        this.anim_bottom_flap.container.innerHTML = this.content_array[this.current_index]
+        this.set_flap_content(this.top_flap, this.content_array[this.current_index], "top")
+        this.set_flap_content(this.bottom_flap, this.content_array[this.current_index], "bottom")
+        this.set_flap_content(this.anim_top_flap, this.content_array[this.current_index], "top")
+        this.set_flap_content(this.anim_bottom_flap, this.content_array[this.current_index], "bottom")
 
         this.anim_top = this.anim_top_flap.flap.animate([{ transform: "scaleY(1)" }, { transform: "scaleY(0)" }], { duration: this.anim_durration, easing: "ease-in", fill: "forwards" })
         this.anim_bottom = this.anim_bottom_flap.flap.animate([{ transform: "scaleY(0)" }, { transform: "scaleY(1)" }], { duration: this.anim_durration, fill: "forwards", delay: this.anim_durration })
@@ -68,11 +68,11 @@ class SplitFap {
 
         this.anim_bottom_flap.flap.style.transform = "scaleY(0)"
 
-        this.anim_top_flap.container.innerHTML = start_content
-        this.bottom_flap.container.innerHTML = start_content
+        this.set_flap_content(this.anim_top_flap, start_content, "top")
+        this.set_flap_content(this.bottom_flap, start_content, "bottom")
 
-        this.top_flap.container.innerHTML = end_content
-        this.anim_bottom_flap.container.innerHTML = end_content
+        this.set_flap_content(this.top_flap, end_content, "top")
+        this.set_flap_content(this.anim_bottom_flap, end_content, "bottom")
 
         this.anim_top.play()
         this.anim_bottom.play()
@@ -101,6 +101,16 @@ class SplitFap {
 
         this.target_index = Math.max(i, 0)
         return true
+    }
+
+    set_flap_content(flap, content, side) {
+        flap.container.innerHTML = content
+
+        if (content === content.toLowerCase()) {
+            flap.container.style.transform = `translateY(${side === "top" ? "43" : "-57"}%)`
+        } else {
+            flap.container.style.transform = `translateY(${side === "top" ? "" : "-"}50%)`
+        }
     }
 }
 
