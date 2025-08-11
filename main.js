@@ -77,7 +77,6 @@ class SplitFlapDisplay {
         for (let j = cursor.row; j < this.rows; j++) {
             for (let i = 0; i < this.columns; i++) {
                 if (j === cursor.row && i < cursor.column - 1) {
-                    console.log(j, i)
                     continue
                 }
 
