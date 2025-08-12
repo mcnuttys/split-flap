@@ -172,6 +172,7 @@ class SplitFlapDisplay {
                 for (let j = cursor.column; j < this.columns; j++) {
                     this.split_flaps[cursor.row][j].set_target_index(0)
                 }
+                
                 cursor.row++
                 cursor.column = 0
             }
@@ -183,6 +184,9 @@ class SplitFlapDisplay {
             let y = cursor.row
 
             for (let j = 0; j < word.length; j++) {
+                if (!this.split_flaps[y] || !this.split_flaps[y][x + j])
+                    continue
+
                 let set = this.split_flaps[y][x + j].set_content(word[j])
 
                 if (set)
