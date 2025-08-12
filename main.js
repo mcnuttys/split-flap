@@ -172,7 +172,7 @@ class SplitFlapDisplay {
                 for (let j = cursor.column; j < this.columns; j++) {
                     this.split_flaps[cursor.row][j].set_target_index(0)
                 }
-                
+
                 cursor.row++
                 cursor.column = 0
             }
@@ -213,6 +213,7 @@ class SplitFlapDisplay {
 
 class SplitFlap {
     content = ""
+    time = 0
 
     constructor(parent, alphabet, target_index = 0) {
         this.current_index = 0
@@ -278,20 +279,35 @@ class SplitFlap {
     }
 
     update(tt) {
+        this.time = tt
+
         if (this.current_index === this.target_index)
             return
 
         if (!(this.anim_top_finished && this.anim_bottom_finished)) {
-            let delta_top = tt - this.anim_top.startTime
-            let delta_bottom = tt - this.anim_bottom.startTime
-
-            if (delta_top > this.anim_duration * 2 || delta_bottom > this.anim_duration * 2) {
-                this.anim_top.cancel()
-                this.anim_bottom.cancel()
+            if ((this.anim_top.pending || this.anim_bottom.pending) && tt - this.anim_start_time >= this.anim_durration * 2) {
+                this.anim_top.finish()
+                this.anim_bottom.finish()
 
                 this.anim_top_finished = true
                 this.anim_bottom_finished = true
             }
+
+            // if (delta_top > this.anim_duration * 2 || delta_bottom > this.anim_duration * 2) {
+            //     this.anim_top.cancel()
+            //     this.anim_bottom.cancel()
+            // 
+            //     this.anim_top_finished = true
+            //     this.anim_bottom_finished = true
+            // }
+
+            // if (this.anim_top.playState === "running" && this.anim_top.startTime === null) {
+            //     this.anim_top.finish()
+            //     this.anim_bottom.finish()
+            // 
+            //     this.anim_top_finished = true
+            //     this.anim_bottom_finished = true
+            // }
 
             return
         }
@@ -308,6 +324,7 @@ class SplitFlap {
     async animate_flaps(start_content, end_content) {
         this.anim_top_finished = false
         this.anim_bottom_finished = false
+        this.anim_start_time = this.time
 
         this.anim_bottom_flap.flap.style.transform = "scaleY(0)"
 
