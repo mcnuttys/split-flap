@@ -293,22 +293,6 @@ class SplitFlap {
                 this.anim_bottom_finished = true
             }
 
-            // if (delta_top > this.anim_duration * 2 || delta_bottom > this.anim_duration * 2) {
-            //     this.anim_top.cancel()
-            //     this.anim_bottom.cancel()
-            // 
-            //     this.anim_top_finished = true
-            //     this.anim_bottom_finished = true
-            // }
-
-            // if (this.anim_top.playState === "running" && this.anim_top.startTime === null) {
-            //     this.anim_top.finish()
-            //     this.anim_bottom.finish()
-            // 
-            //     this.anim_top_finished = true
-            //     this.anim_bottom_finished = true
-            // }
-
             return
         }
 
