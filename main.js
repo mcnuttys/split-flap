@@ -2,8 +2,96 @@ const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+const init = () => {
+    const flap_holder = document.querySelector(".split_flap_holder")
+
+    const text_area_dom = document.querySelector("textarea")
+    const rows_dom = document.querySelector("#rows")
+    const columns_dom = document.querySelector("#columns")
+    const width_dom = document.querySelector("#width")
+    const height_dom = document.querySelector("#height")
+    const font_size_dom = document.querySelector("#font_size")
+    const scroll_delay_dom = document.querySelector("#scroll_delay")
+    const alphabet_dom = document.querySelector("#alphabet")
+
+    alphabet = " etaoinshrdlcumwfgypbvkjxqzETAOINSHRDLCUMWFGYPBVKJXQZ0123456789!.,/:@"
+    split_flap_display = new SplitFlapDisplay(flap_holder, alphabet.split(''), 5, 30)
+
+    text_area_dom.addEventListener("input", () => update_text())
+    const update_text = async () => {
+        text = text_area_dom.value
+        split_flap_display.set_display(text)
+    }
+    update_text()
+
+    width_dom.addEventListener("input", () => set_flap_size())
+    height_dom.addEventListener("input", () => set_flap_size())
+    const set_flap_size = () => {
+        const width = width_dom.value
+        const height = height_dom.value
+
+        split_flap_display.set_flap_size(width, height)
+    }
+    set_flap_size()
+
+    font_size_dom.addEventListener("input", () => set_font_size())
+    const set_font_size = () => {
+        split_flap_display.set_font_size(font_size_dom.value)
+    }
+    set_font_size()
+
+    scroll_delay_dom.addEventListener("input", () => set_scroll_delay())
+    const set_scroll_delay = () => {
+        split_flap_display.set_scroll_delay(scroll_delay_dom.value)
+    }
+    set_scroll_delay()
+
+    alphabet_dom.addEventListener("input", () => update_alphabet())
+    const update_alphabet = () => {
+        alphabet = " " + alphabet_dom.value
+        split_flap_display.set_alphabet(alphabet)
+    }
+    update_alphabet()
+
+    rows_dom.addEventListener("input", () => update_row_columns())
+    columns_dom.addEventListener("input", () => update_row_columns())
+    const update_row_columns = () => {
+        const rows = rows_dom.value
+        const columns = columns_dom.value
+
+        flap_holder.removeChild(split_flap_display.holder)
+
+        split_flap_display = new SplitFlapDisplay(flap_holder, alphabet.split(''), rows, columns)
+        update_text()
+
+        set_flap_size()
+        set_font_size()
+        set_scroll_delay()
+    }
+    update_row_columns()
+
+    update()
+}
+window.onload = init
+
+let last_time = 0
+const update = (tt) => {
+    requestAnimationFrame(update)
+
+    let dt = last_time - tt
+    dt = Math.max(dt, (1 / 60))
+
+    split_flap_display.update_display(tt)
+
+    last_time = tt
+}
+
 class SplitFlapDisplay {
+    text = ""
+    scroll_delay = 50
+
     constructor(parent, alphabet, rows, columns) {
+        this.alphabet = alphabet
         this.rows = rows
         this.columns = columns
 
@@ -33,15 +121,47 @@ class SplitFlapDisplay {
         parent.appendChild(holder)
     }
 
-    update_display() {
+    set_alphabet(alphabet) {
+        this.alphabet = alphabet
+
         for (let j = 0; j < this.rows; j++) {
             for (let i = 0; i < this.columns; i++) {
-                this.split_flaps[j][i].update()
+                this.split_flaps[j][i].set_alphabet(this.alphabet)
+            }
+        }
+    }
+
+    set_flap_size(width, height) {
+        for (let j = 0; j < this.rows; j++) {
+            for (let i = 0; i < this.columns; i++) {
+                this.split_flaps[j][i].set_width_height(width, height)
+            }
+        }
+    }
+
+    set_font_size(font_size) {
+        for (let j = 0; j < this.rows; j++) {
+            for (let i = 0; i < this.columns; i++) {
+                this.split_flaps[j][i].set_font_size(font_size)
+            }
+        }
+    }
+
+    set_scroll_delay(scroll_delay) {
+        this.scroll_delay = scroll_delay
+    }
+
+    update_display(tt) {
+        for (let j = 0; j < this.rows; j++) {
+            for (let i = 0; i < this.columns; i++) {
+                this.split_flaps[j][i].update(tt)
             }
         }
     }
 
     async set_display(text) {
+        this.text = text
+
         const words = text.split(' ')
         const cursor = { row: 0, column: 0 }
 
@@ -66,7 +186,7 @@ class SplitFlapDisplay {
                 let set = this.split_flaps[y][x + j].set_content(word[j])
 
                 if (set)
-                    await sleep(50)
+                    await sleep(this.scroll_delay)
                 else
                     await sleep(10)
             }
@@ -88,6 +208,8 @@ class SplitFlapDisplay {
 }
 
 class SplitFlap {
+    content = ""
+
     constructor(parent, alphabet, target_index = 0) {
         this.current_index = 0
         this.target_index = target_index
@@ -108,8 +230,7 @@ class SplitFlap {
         this.set_flap_content(this.anim_top_flap, this.alphabet[this.current_index], "top")
         this.set_flap_content(this.anim_bottom_flap, this.alphabet[this.current_index], "bottom")
 
-        this.anim_top = this.anim_top_flap.flap.animate([{ transform: "scaleY(1)" }, { transform: "scaleY(0)" }], { duration: this.anim_durration, easing: "ease-in", fill: "forwards" })
-        this.anim_bottom = this.anim_bottom_flap.flap.animate([{ transform: "scaleY(0)" }, { transform: "scaleY(1)" }], { duration: this.anim_durration, fill: "forwards", delay: this.anim_durration })
+        this.set_animations()
 
         this.anim_top_finished = true
         this.anim_bottom_finished = true
@@ -133,18 +254,38 @@ class SplitFlap {
         parent.appendChild(this.element)
     }
 
-    update() {
+    set_alphabet(alphabet) {
+        this.alphabet = alphabet
+        this.set_content(this.content)
+    }
+
+    set_width_height(width, height) {
+        this.element.style.width = width + "px"
+        this.element.style.height = height + "px"
+    }
+
+    set_font_size(font_size) {
+        this.element.style.fontSize = font_size + "pt"
+    }
+
+    set_animations() {
+        this.anim_top = this.anim_top_flap.flap.animate([{ transform: "scaleY(1)" }, { transform: "scaleY(0)" }], { duration: this.anim_durration, fill: "forwards" })
+        this.anim_bottom = this.anim_bottom_flap.flap.animate([{ transform: "scaleY(0)" }, { transform: "scaleY(1)" }], { duration: this.anim_durration, fill: "forwards", delay: this.anim_durration })
+    }
+
+    update(tt) {
         if (this.current_index === this.target_index)
             return
 
         if (!(this.anim_top_finished && this.anim_bottom_finished)) {
-            if (this.anim_top.currentTime > this.duration * 2) {
-                this.anim_top.cancel()
-                this.anim_top_finished = true
-            }
+            let delta_top = tt - this.anim_top.startTime
+            let delta_bottom = tt - this.anim_bottom.startTime
 
-            if (this.anim_bottom.currentTime > this.duration * 2) {
+            if (delta_top > this.anim_duration * 2 || delta_bottom > this.anim_duration * 2) {
+                this.anim_top.cancel()
                 this.anim_bottom.cancel()
+
+                this.anim_top_finished = true
                 this.anim_bottom_finished = true
             }
 
@@ -192,8 +333,9 @@ class SplitFlap {
     }
 
     set_content(content) {
-        let i = this.alphabet.indexOf(content)
+        this.content = content
 
+        let i = this.alphabet.indexOf(content)
         if (this.target_index === i)
             return false
 
@@ -202,6 +344,9 @@ class SplitFlap {
     }
 
     set_flap_content(flap, content, side) {
+        if (!content)
+            return
+
         flap.container.innerHTML = content
 
         if (content === content.toLowerCase()) {
@@ -226,45 +371,3 @@ const new_flap = (parent, className) => {
         container: container
     }
 }
-
-const flap_holder = document.querySelector(".split_flap_holder")
-
-// str = " AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789!."
-str = " etaoinshrdlcumwfgypbvkjxqzETAOINSHRDLCUMWFGYPBVKJXQZ0123456789!.,/:@"
-arr = str.split('')
-flaps = []
-// for (let i = 0; i < 234; i++) {
-//     let new_flap = new SplitFlap(flap_holder, arr)
-// 
-//     flaps.push(new_flap)
-// }
-
-const split_flap_display = new SplitFlapDisplay(flap_holder, arr, 5, 30)
-
-let last_time = 0
-const loop = (tt) => {
-    requestAnimationFrame(loop)
-
-    let dt = last_time - tt
-    dt = Math.max(dt, (1 / 60))
-
-    split_flap_display.update_display()
-
-    flaps.forEach(flap => {
-        flap.update(dt)
-    })
-    last_time = tt
-}
-loop(0)
-
-const textarea = document.querySelector("textarea")
-textarea.addEventListener("input", () => {
-    update_text()
-})
-
-const update_text = async () => {
-    text = textarea.value
-    split_flap_display.set_display(text)
-}
-
-update_text()

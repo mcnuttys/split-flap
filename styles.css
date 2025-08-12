@@ -1,25 +1,86 @@
 body {
     background-color: rgb(80, 80, 80);
+    color: white;
 
     display: flex;
     flex-direction: column;
 
     justify-content: center;
     align-items: center;
+
+    row-gap: 1em;
+
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+#controls {
+    background-color: rgb(25, 25, 25);
+
+    width: 75%;
+
+    padding: 1em;
+    border-radius: 1em;
+
+    display: flex;
+    column-gap: 1em;
 }
 
 textarea {
-    width: 75%;
-    height: 10vh;
+    width: 50%;
 
-    background-color: rgb(25, 25, 25);
-    color: white;
+    color: black;
 
     padding: 1em;
     border-radius: 1em;
     resize: none;
+}
 
-    border-width: 0;
+#settings {
+    width: 50%;
+
+    display: flex;
+    row-gap: 1em;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+#settings div {
+    width: 48%;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
+    column-gap: 1em;
+}
+
+#settings label {
+    vertical-align: baseline;
+    text-wrap-mode: nowrap;
+}
+
+#settings input {
+    border-radius: 1em;
+    padding: 0;
+
+    text-align: end;
+    width: 100%;
+}
+
+#settings .full_width {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    column-gap: 1em;
+}
+
+#settings #alphabet {
+    width: 100%;
+
+    text-align: center;
 }
 
 .split_flap_holder {
@@ -35,6 +96,8 @@ textarea {
 
     padding: 1em;
     border-radius: 1em;
+
+    font-family: 'Times New Roman', Times, serif;
 }
 
 .split_flap_row {
@@ -47,7 +110,7 @@ textarea {
     width: 16px;
     height: 32px;
     padding: 15px;
-    font-size: 2.2em;
+    font-size: 24pt;
 
     color: white;
     user-select: none;
