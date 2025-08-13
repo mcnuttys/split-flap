@@ -67,6 +67,61 @@ textarea {
     width: 100%;
 }
 
+@media screen and (max-width: 900px) {
+    #controls {
+        background-color: rgb(25, 25, 25);
+
+        padding: 1em;
+        border-radius: 1em;
+
+        display: flex;
+        flex-direction: column;
+        column-gap: 1em;
+        row-gap: 1em;
+
+        justify-content: center;
+        align-items: center;
+    }
+
+    textarea {
+        width: 92%;
+
+        color: black;
+
+        padding: 1em;
+        border-radius: 1em;
+        resize: none;
+    }
+
+    #settings {
+        width: 100%;
+
+        display: flex;
+        flex-direction: column;
+        row-gap: 1em;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    #settings div {
+        width: 100%;
+
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+
+        column-gap: 1em;
+    }
+
+    #settings input {
+        border-radius: 1em;
+        padding: 1em;
+
+        text-align: end;
+        width: 100%;
+    }
+}
+
 #settings .full_width {
     width: 100%;
 
